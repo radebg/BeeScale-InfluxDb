@@ -36,11 +36,3 @@ def fetch_and_write():
     print(f"Upisano: {data}")
 
 fetch_and_write()
-```
-
----
-
-### `requirements.txt`
-```
-influxdb-client
-requests
