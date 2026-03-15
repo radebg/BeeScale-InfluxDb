@@ -22,7 +22,7 @@ def fetch_and_write():
         return
 
     point = (
-        Point("beehive")
+        Point("BeeScale")
         .tag("channel", CHANNEL_ID)
         .field("weight",      float(data["field1"] or 0))
         .field("temperature", float(data["field2"] or 0))
