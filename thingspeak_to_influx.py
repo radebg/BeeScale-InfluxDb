@@ -4,10 +4,6 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime, timezone
 
-
-INFLUX_TOKEN  = os.environ["UsgwX6tr72Z_1Txvr2sTQQFPmz-f3cjnKrJfBOTrn9yf9g2mwlw-elPNPIaMyU9y-3zIhR-FT9T-Y6wwptCu2Q=="]
-
-
 INFLUX_URL    = os.environ["INFLUX_URL"]
 INFLUX_TOKEN  = os.environ["INFLUX_TOKEN"]
 INFLUX_ORG    = os.environ["INFLUX_ORG"]
