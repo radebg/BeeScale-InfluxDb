@@ -29,3 +29,11 @@ jobs:
           INFLUX_BUCKET: ${{ secrets.INFLUX_BUCKET }}
           TS_CHANNEL_ID: ${{ secrets.TS_CHANNEL_ID }}
           TS_API_KEY:    ${{ secrets.TS_API_KEY }}
+
+      - name: Run OpenMeteo script
+        run: python openmeteo_to_influx.py
+        env:
+          INFLUX_URL:    ${{ secrets.INFLUX_URL }}
+          INFLUX_TOKEN:  ${{ secrets.INFLUX_TOKEN }}
+          INFLUX_ORG:    ${{ secrets.INFLUX_ORG }}
+          INFLUX_BUCKET: ${{ secrets.INFLUX_BUCKET }}
