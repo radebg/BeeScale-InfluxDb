@@ -1,0 +1,1 @@
+# BeeScale-InfluxDb
