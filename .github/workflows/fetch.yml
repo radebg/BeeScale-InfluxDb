@@ -1,0 +1,31 @@
+name: ThingSpeak to InfluxDB
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # svaki 15 minuta
+  workflow_dispatch:          # omogućava ručno pokretanje dugmetom
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run script
+        run: python thingspeak_to_influx.py
+        env:
+          INFLUX_URL:    ${{ secrets.INFLUX_URL }}
+          INFLUX_TOKEN:  ${{ secrets.INFLUX_TOKEN }}
+          INFLUX_ORG:    ${{ secrets.INFLUX_ORG }}
+          INFLUX_BUCKET: ${{ secrets.INFLUX_BUCKET }}
+          TS_CHANNEL_ID: ${{ secrets.TS_CHANNEL_ID }}
+          TS_API_KEY:    ${{ secrets.TS_API_KEY }}
