@@ -12,27 +12,38 @@ CHANNEL_ID    = os.environ["TS_CHANNEL_ID"]
 TS_API_KEY    = os.environ["TS_API_KEY"]
 
 def fetch_and_write():
-    url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds/last.json?api_key={TS_API_KEY}"
+    url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds.json?api_key={TS_API_KEY}&results=2"
     resp = requests.get(url, timeout=10)
-    data = resp.json()
-
-    # Proveri da li postoje podaci
-    if "field1" not in data or data["field1"] is None:
-        print("Nema novih podataka")
-        return
-
-    point = (
-        Point("BeeScale")
-        .tag("channel", CHANNEL_ID)
-        .field("weight",      float(data["field1"] or 0))
-        .field("temperature", float(data["field2"] or 0))
-        .field("humidity",    float(data["field3"] or 0))
-        .field("battery",     float(data["field4"] or 0))
-        .time(datetime.now(timezone.utc))
-    )
+    feeds = resp.json()["feeds"]
 
     client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG)
-    client.write_api(write_options=SYNCHRONOUS).write(bucket=INFLUX_BUCKET, record=point)
-    print(f"Upisano: {data}")
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+
+    for entry in feeds:
+        point = Point("BeeScale").tag("channel", CHANNEL_ID)
+        has_data = False
+
+        # Tip 1 — senzorski podaci
+        if entry.get("field1") is not None:
+            point.field("tezina",     float(entry["field1"]))
+            point.field("baterija",   float(entry["field2"]))
+            point.field("temperatura", float(entry["field3"]))
+            point.field("vlaznost",   float(entry["field4"]))
+            point.field("rssi",       float(entry["field5"]))
+            point.field("snr",        float(entry["field6"]))
+            has_data = True
+
+        # Tip 2 — korigovana težina
+        if entry.get("field7") is not None:
+            point.field("tezina_k", float(entry["field7"]))
+            has_data = True
+
+        if has_data:
+            # Koristi ThingSpeak timestamp
+            ts = datetime.strptime(entry["created_at"], "%Y-%m-%dT%H:%M:%SZ")
+            ts = ts.replace(tzinfo=timezone.utc)
+            point.time(ts)
+            write_api.write(bucket=INFLUX_BUCKET, record=point)
+            print(f"Upisano entry {entry['entry_id']}: {entry['created_at']}")
 
 fetch_and_write()
