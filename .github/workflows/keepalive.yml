@@ -3,7 +3,7 @@ name: Keep Alive
 on:
   schedule:
     - cron: '0 12 1 * *'  # prvi dan u mesecu u podne
-
+  workflow_dispatch:
 jobs:
   keepalive:
     runs-on: ubuntu-latest
