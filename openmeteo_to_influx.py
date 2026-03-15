@@ -10,7 +10,7 @@ INFLUX_ORG    = os.environ["INFLUX_ORG"]
 INFLUX_BUCKET = os.environ["INFLUX_BUCKET"]
 
 def fetch_and_write():
-    url = "https://api.open-meteo.com/v1/forecast?latitude=44.5718&longitude=20.60488&current=temperature_2m,wind_speed_10m&timezone=Europe%2FBerlin&forecast_days=1"
+    url = "https://api.open-meteo.com/v1/forecast?latitude=44.5718&longitude=20.60488&current=temperature_2m,wind_speed_10m,precipitation,weather_code,relative_humidity_2m,rain,cloud_cover,wind_direction_10m,apparent_temperature,showers,pressure_msl,wind_gusts_10m,is_day,snowfall,surface_pressure&timezone=Europe%2FBerlin&forecast_days=1"
 
     resp = requests.get(url, timeout=10)
     current = resp.json()["current"]
@@ -18,13 +18,26 @@ def fetch_and_write():
     point = (
         Point("weather")
         .tag("location", "Sopot")
-        .field("temperatura", float(current["temperature_2m"]))
-        .field("vetar",       float(current["wind_speed_10m"]))
+        .field("temperatura",           float(current["temperature_2m"]))
+        .field("temperatura_osecaj",    float(current["apparent_temperature"]))
+        .field("vlaznost",              float(current["relative_humidity_2m"]))
+        .field("vetar",                 float(current["wind_speed_10m"]))
+        .field("vetar_udari",           float(current["wind_gusts_10m"]))
+        .field("vetar_smer",            float(current["wind_direction_10m"]))
+        .field("padavine",              float(current["precipitation"]))
+        .field("kisa",                  float(current["rain"]))
+        .field("pljuskovi",             float(current["showers"]))
+        .field("sneg",                  float(current["snowfall"]))
+        .field("oblacnost",             float(current["cloud_cover"]))
+        .field("pritisak",              float(current["pressure_msl"]))
+        .field("pritisak_povrsinski",   float(current["surface_pressure"]))
+        .field("weather_code",          int(current["weather_code"]))
+        .field("dan",                   int(current["is_day"]))
         .time(datetime.now(timezone.utc))
     )
 
     client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG)
     client.write_api(write_options=SYNCHRONOUS).write(bucket=INFLUX_BUCKET, record=point)
-    print(f"Upisano: {current['temperature_2m']}°C, vetar {current['wind_speed_10m']} km/h")
+    print(f"Upisano: {current['temperature_2m']}°C, vlaznost {current['relative_humidity_2m']}%, vetar {current['wind_speed_10m']} km/h")
 
 fetch_and_write()
