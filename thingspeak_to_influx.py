@@ -4,12 +4,12 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime, timezone
 
-INFLUX_URL    = os.environ["INFLUX_URL"]
-INFLUX_TOKEN  = os.environ["INFLUX_TOKEN"]
-INFLUX_ORG    = os.environ["INFLUX_ORG"]
-INFLUX_BUCKET = os.environ["INFLUX_BUCKET"]
-CHANNEL_ID    = os.environ["TS_CHANNEL_ID"]
-TS_API_KEY    = os.environ["TS_API_KEY"]
+INFLUX_URL    = os.environ["https://eu-central-1-1.aws.cloud2.influxdata.com"]
+INFLUX_TOKEN  = os.environ["UsgwX6tr72Z_1Txvr2sTQQFPmz-f3cjnKrJfBOTrn9yf9g2mwlw-elPNPIaMyU9y-3zIhR-FT9T-Y6wwptCu2Q=="]
+INFLUX_ORG    = os.environ["BeeScale]
+INFLUX_BUCKET = os.environ["ThingSpeak"]
+CHANNEL_ID    = os.environ["1283707"]
+TS_API_KEY    = os.environ["1YWFEWQU964Y353Z"]
 
 def fetch_and_write():
     url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds/last.json?api_key={TS_API_KEY}"
