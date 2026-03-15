@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 INFLUX_URL    = os.environ["https://eu-central-1-1.aws.cloud2.influxdata.com"]
 INFLUX_TOKEN  = os.environ["UsgwX6tr72Z_1Txvr2sTQQFPmz-f3cjnKrJfBOTrn9yf9g2mwlw-elPNPIaMyU9y-3zIhR-FT9T-Y6wwptCu2Q=="]
-INFLUX_ORG    = os.environ["BeeScale]
+INFLUX_ORG    = os.environ["BeeScale"]
 INFLUX_BUCKET = os.environ["ThingSpeak"]
 CHANNEL_ID    = os.environ["1283707"]
 TS_API_KEY    = os.environ["1YWFEWQU964Y353Z"]
