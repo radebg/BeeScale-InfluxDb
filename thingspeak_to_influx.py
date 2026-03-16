@@ -12,7 +12,7 @@ CHANNEL_ID    = os.environ["TS_CHANNEL_ID"]
 TS_API_KEY    = os.environ["TS_API_KEY"]
 
 def fetch_and_write():
-    url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds.json?api_key={TS_API_KEY}&results=6"
+    url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds.json?api_key={TS_API_KEY}&results=24"
     resp = requests.get(url, timeout=10)
     feeds = resp.json()["feeds"]
 
